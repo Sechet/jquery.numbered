@@ -1,4 +1,4 @@
-/*! numbered v0.1.2 | pavel-yagodin | MIT License | https://github.com/pavel-yagodin/numbered/*/
+/*! numbered v0.1.2 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function($){
 	jQuery.fn.numbered = function(options){
 		options = $.extend({
