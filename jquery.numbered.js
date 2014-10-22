@@ -1,4 +1,4 @@
-/*! numbered v0.1.2 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
+/*! numbered v0.1.3 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function($){
 	jQuery.fn.numbered = function(options){
 		options = $.extend({
@@ -82,22 +82,29 @@
 					}
 				}
 			}
-
-			if (type === 'caret') {
-				var cursorPos = null;
-				if (document.selection) {
-					var range = document.selection.createRange();
-					range.moveStart('textedit', -1);
-					cursorPos = range.text.length;
-				} else {
-					cursorPos = $input[0].selectionStart;
+			if (!/Android/i.test(navigator.userAgent)) {
+				if (type === 'caret') {
+					var cursorPos = null;
+					if (document.selection) {
+						var range = document.selection.createRange();
+						range.moveStart('textedit', -1);
+						cursorPos = range.text.length;
+					} else {
+						cursorPos = $input[0].selectionStart;
+					}
+					if (cursorPos < _this.posFocus) {
+						_this.posFocus = cursorPos;
+					}
 				}
-				if (cursorPos < _this.posFocus) {
-					_this.posFocus = cursorPos;
+				if (position !== undefined) {
+					_this.posFocus = position;
 				}
-			}
-			if (position !== undefined) {
-				_this.posFocus = position;
+			}else{
+				var val = data.$input.data(pluginValue)
+				_this.posFocus = getPos(data, val.length);
+				if(val.length === data.options.max){
+					_this.posFocus++;
+				}
 			}
 			if(type !== 'focusout' && $input.val() !== valueWithMask){
 				$input.val(valueWithMask);
@@ -138,10 +145,9 @@
 			data.paste = false;
 			data.chars = false;
 			data.pasteOld = '';
-			data.focus = false;
 			data.posFocus = 0;
 			data.keyState = false;
-			if(data.$input.attr('placeholder') !== undefined && options.placeholder === undefined){
+			if(data.$input.attr('placeholder') !== undefined && options.placeholder === false){
 				options.placeholder = data.$input.attr('placeholder');
 			}
 			if( typeof options.mask === 'string'){
@@ -163,6 +169,13 @@
 				.on('click', function(){
 					data.$input.focus();
 				});
+			if (/Android/i.test(navigator.userAgent)) {
+				data.$input.attr('type', 'tel')
+				if(/Android 4.0/i.test(navigator.userAgent)){
+					data.options.empty = ' '
+				}
+			}
+
 			if (/Android/i.test(navigator.userAgent) && /YaBrowser/i.test(navigator.userAgent) ) {
 				var text = '';
 				for (var key in data.options.mask) {
@@ -188,19 +201,21 @@
 				data.$input.trigger('focusout');
 				
 			} else {
-				data.$wrap.append('<span class="'+options.spanClass+'"></span>');
-				data.$span = data.$wrap.find('span');
 				data.$wrap.attr(options.attrPlaceholder, (options.placeholder===false)?'':options.placeholder);
 				$(window).on('beforeunload.numbered', function(){
 					data.$input.trigger('focusout');
 				});
 				data.$input
 					.on('change.numbered', function() {
+						data.value = this.value.replace(/\D/, '');
+						data.value = (data.value.substr(0, options.max)).split('');
+						data.$input
+							.data(pluginValue, data.value);
+						data.posFocus = getPos(data, data.value.length);
 						data = make(data, 'change');
 					})
 					.on('focusout.numbered', function() {
 						data = make(data, 'focusout');
-						data.focus = false;
 					})
 					.on('paste.numbered', function() {
 						data.paste = true;
@@ -231,7 +246,7 @@
 							if(e.type === 'click' && data.focus){
 								data = make(data, 'caret');
 							} else {
-								data.$input.val(data.$input.val());
+								//data.$input.val(data.$input.val());
 								data = make(data, 'input', data.posFocus);
 							}
 						}
@@ -239,7 +254,12 @@
 							data.focus = true;
 						}
 					})
-					.on('keydown.numbered input.numbered', function(e) {
+					.on('input.numbered', function(e) {
+						//alert('test');
+						//data.$input.val(data.$input.val());
+						return false;
+					})
+					.on('keydown.numbered', function(e) {
 						if (e.keyCode !== 9) {
 							e.preventDefault();
 						}
@@ -305,6 +325,7 @@
 						}else{
 							e.preventDefault();
 						}
+						return false;
 					});
 				data.posFocus = getPos(data, 0);
 				data = make(data, 'focusout');
