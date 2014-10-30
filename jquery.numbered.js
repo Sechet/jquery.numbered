@@ -1,4 +1,4 @@
-/*! numbered v0.1.3 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
+/*! numbered v0.1.4 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function($){
 	jQuery.fn.numbered = function(options){
 		options = $.extend({
@@ -12,6 +12,7 @@
 			wrapDisableClass: 'numbered__wrap_disable',
 			wrapMaskClass: 'numbered__wrap_mask',
 			inputClass: 'numbered',
+			errorClass: 'numbered_error',
 			attr: 'data-numbered',
 			attrPlaceholder: 'data-placeholder',
 			placeholder: false
@@ -48,13 +49,18 @@
 		};
 		var make = function(data, type, position){
 			var _this = data,
-			opts = _this.options,
-			$input = _this.$input,
-			$wrap = _this.$wrap,
-			$span = _this.$span,
-			value = $input.data(pluginValue),
-			valueWithMask = '',
-			i = 0;
+				opts = _this.options,
+				$input = _this.$input,
+				$wrap = _this.$wrap,
+				$span = _this.$span,
+				value = $input.data(pluginValue),
+				valueWithMask = '',
+				i = 0;
+			if(value.length !== opts.max){
+				$input.addClass(opts.errorClass);
+			} else {
+				$input.removeClass(opts.errorClass);
+			}
 			if( type === 'input' || ( type !== 'input' && value.length !== 0) ) {
 				var find = false;
 				for (var key in opts.mask) {
@@ -82,6 +88,7 @@
 					}
 				}
 			}
+			valueWithMask = valueWithMask.substr(0, opts.mask.length);
 			if (!/Android/i.test(navigator.userAgent)) {
 				if (type === 'caret') {
 					var cursorPos = null;
@@ -149,6 +156,8 @@
 			data.keyState = false;
 			if(data.$input.attr('placeholder') !== undefined && options.placeholder === false){
 				options.placeholder = data.$input.attr('placeholder');
+				data.$input.attr('data-placeholder', options.placeholder);
+				data.$input.attr('placeholder', '');
 			}
 			if( typeof options.mask === 'string'){
 				options.max = (options.mask).split(options.maskKey).length - 1;
@@ -157,6 +166,8 @@
 			data.options = options;
 			data.value = data.$input.val().replace(/\D/, '');
 			data.value = (data.value.substr(0, options.max)).split('');
+
+			
 			data.$input
 				.data(pluginValue, data.value)
 				.attr('autocomplete', 'off')
@@ -246,7 +257,6 @@
 							if(e.type === 'click' && data.focus){
 								data = make(data, 'caret');
 							} else {
-								//data.$input.val(data.$input.val());
 								data = make(data, 'input', data.posFocus);
 							}
 						}
@@ -255,8 +265,6 @@
 						}
 					})
 					.on('input.numbered', function(e) {
-						//alert('test');
-						//data.$input.val(data.$input.val());
 						return false;
 					})
 					.on('keydown.numbered', function(e) {
@@ -331,5 +339,6 @@
 				data = make(data, 'focusout');
 			}
 		});
+		return this;
 	};
 })(jQuery);
