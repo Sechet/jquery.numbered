@@ -1,4 +1,4 @@
-/*! numbered v0.1.4 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
+/*! numbered v0.1.6 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function($){
 	jQuery.fn.numbered = function(options){
 		options = $.extend({
@@ -17,6 +17,10 @@
 			attrPlaceholder: 'data-placeholder',
 			placeholder: false
 		}, options);
+
+		if($(this).hasClass(options.inputClass)){
+			return $(this);
+		}
 		var pluginName = 'numbered',
 			pluginValue = 'numberedValue',
 			dataPlugin = 'plugin_' + pluginName;
@@ -80,7 +84,7 @@
 							}
 						}else{
 							valueWithMask += value[i];
-							i++; 
+							i++;
 						}
 					}
 					if(!find){
@@ -167,7 +171,7 @@
 			data.value = data.$input.val().replace(/\D/, '');
 			data.value = (data.value.substr(0, options.max)).split('');
 
-			
+
 			data.$input
 				.data(pluginValue, data.value)
 				.attr('autocomplete', 'off')
@@ -210,7 +214,7 @@
 					}
 				});
 				data.$input.trigger('focusout');
-				
+
 			} else {
 				data.$wrap.attr(options.attrPlaceholder, (options.placeholder===false)?'':options.placeholder);
 				$(window).on('beforeunload.numbered', function(){
@@ -233,6 +237,9 @@
 						data.pasteOld = data.$input.val();
 					})
 					.on('keyup.numbered click.numbered focusin.numbered input.numbered', function(e) {
+						if($(this).attr('readonly') === 'readonly'){
+							return false;
+						}
 						if(!data.options.chars){
 							if (data.paste) {
 								if (e.type == 'input') {
@@ -268,6 +275,9 @@
 						return false;
 					})
 					.on('keydown.numbered', function(e) {
+						if($(this).attr('readonly') === 'readonly'){
+							return false;
+						}
 						if (e.keyCode !== 9) {
 							e.preventDefault();
 						}
