@@ -1,4 +1,4 @@
-/*! numbered v0.1.6 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
+/*! numbered v0.1.7 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function($){
 	jQuery.fn.numbered = function(options){
 		options = $.extend({
@@ -280,6 +280,8 @@
 						}
 						if (e.keyCode !== 9) {
 							e.preventDefault();
+						}else{
+							return true;
 						}
 						if(!data.options.chars){
 							data.options.chars = true;
