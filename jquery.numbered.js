@@ -1,4 +1,4 @@
-/*! numbered v0.1.7 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
+/*! numbered v0.1.8 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function($){
 	jQuery.fn.numbered = function(options){
 		options = $.extend({
@@ -293,7 +293,7 @@
 							return false;
 						})
 						.on('keydown.numbered', function(e) {
-							if(e.ctrlKey && e.keyCode === 86){
+							if((e.ctrlKey || e.metaKey) && e.keyCode === 86){
 								return true;
 							}
 							if($(this).attr('readonly') === 'readonly'){
