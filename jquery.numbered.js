@@ -1,5 +1,11 @@
 /*! numbered v0.1.8 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
-(function($){
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		define(['jquery'], factory);
+	} else {
+		factory(jQuery);
+	}
+}(function($){
 	jQuery.fn.numbered = function(options){
 		options = $.extend({
 			mask: '+7 (###) ### - ## - ##',
@@ -375,4 +381,4 @@
 		});
 		return this;
 	};
-})(jQuery);
+})(jQuery));
