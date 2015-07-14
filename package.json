@@ -1,0 +1,18 @@
+{
+  "name": "jquery.numbered",
+  "version": "0.1.9",
+  "description": "Plugin for create an input mask",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/csssr/jquery.numbered"
+  },
+  "keywords": [
+    "validation",
+    "validator"
+  ],
+  "author": "Pavel Yagodin",
+  "bugs": {
+    "url": "https://github.com/csssr/jquery.numbered/issues"
+  },
+  "homepage": "https://github.com/csssr/jquery.numbered",
+}
