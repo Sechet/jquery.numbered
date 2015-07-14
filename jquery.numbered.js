@@ -1,4 +1,4 @@
-/*! numbered v0.1.9 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
+/*! numbered v0.2.0 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
