@@ -1,7 +1,8 @@
 {
   "name": "jquery.numbered",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Plugin for create an input mask",
+  "main": "jquery.numbered.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/csssr/jquery.numbered"
