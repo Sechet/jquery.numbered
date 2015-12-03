@@ -1,4 +1,4 @@
-/*! numbered v0.2.0 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
+/*! numbered v0.2.2 | pavel-yagodin | MIT License | https://github.com/CSSSR/jquery.numbered */
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
@@ -55,6 +55,38 @@
 			}
 			return parseInt(pos);
 		};
+		var getParceVal = function(data, from){
+			if (data.options.mask){
+				var mask = data.options.mask.join('');
+				var maskAsRegex = mask.replace(/([()[\]\.^$|?+-])/g, '\\$1').replace(/\#/g, '(\\d)');
+				var regexp = new RegExp('^' + maskAsRegex + '$');
+				var value = data.$input[0].value;
+				var valueFormatted = '';
+				if (regexp.test(value)) {
+					valueFormatted = value.match(regexp).splice(1).join('')
+				}else{
+					mask = mask.replace(/[^\d\#]/gi, '');
+					maskAsRegex = mask.replace(/\#/g, '(\\d)');
+					regexp = new RegExp('^' + maskAsRegex + '$');
+					value = value.replace(/\D/gi, '');
+					if (regexp.test(value)) {
+						valueFormatted = value.match(regexp).splice(1).join('')
+					}else{
+						var remove = mask.replace(/[^\d]/gi, '');
+						var valTest = value.replace(new RegExp('^' + remove), '');
+						if (regexp.test(valTest)) {
+							valueFormatted = valTest.match(regexp).splice(1).join('')
+						}else{
+							valueFormatted = value;
+						}
+					}
+				}
+				return valueFormatted;
+			} else {
+				return '';
+			}
+		}
+
 		var make = function(data, type, position){
 			var _this = data,
 				opts = _this.options,
@@ -175,7 +207,8 @@
 				options.mask = (options.mask).split('');
 			}
 			data.options = options;
-			data.value = data.$input.val().replace(/\D/, '');
+			data.value = data.$input.val().replace(/\D/gi, '');
+			data.value = getParceVal(data, 'init') || '';
 			data.value = (data.value.substr(0, options.max)).split('');
 
 			if(data.$input.data('numbered')==='init'){
@@ -234,7 +267,9 @@
 					});
 					data.$input
 						.on('change.numbered', function() {
-							data.value = this.value.replace(/\D/, '');
+
+							data.value = getParceVal(data, 'change') || '';
+							data.value = data.value.replace(/\D/gi, '');
 							data.value = (data.value.substr(0, options.max)).split('');
 							data.$input
 								.data(pluginValue, data.value);
@@ -251,17 +286,23 @@
 								var val = data.$input.data(pluginValue)
 								data.posFocus = getPos(data, val.length);
 								data = make(data, 'input');
-								console.log(': '+data.value)
 							}, 10);
-							console.log('test')
 
 						})
 						.on('keyup.numbered click.numbered focusin.numbered input.numbered', function(e) {
 
-							console.log(e.type+': '+data.value)
+							if (e.type == 'input') {
+								data.value = getParceVal(data, 'input') || '';
+								data.value = data.value.replace(/\D/, '');
+								data.value = (data.value.substr(0, options.max)).split('');
+								data.$input.data(pluginValue, data.value);
+								data = make(data, 'input');
+							}
+
 							if($(this).attr('readonly') === 'readonly'){
 								return false;
 							}
+
 							if(!data.options.chars){
 								if (data.paste) {
 									if (e.type == 'input') {
@@ -282,11 +323,12 @@
 										data.paste = false;
 									}
 								}
-
-								if(e.type === 'click' && data.focus){
-									data = make(data, 'caret');
-								} else {
-									data = make(data, 'input', data.posFocus);
+								if (e.type !== 'input') {
+									if(e.type === 'click' && data.focus){
+										data = make(data, 'caret');
+									} else {
+										data = make(data, 'input', data.posFocus);
+									}
 								}
 							}
 							if(e.type === 'focusin'){

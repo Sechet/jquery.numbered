@@ -115,6 +115,10 @@
 				empty: false
 			});
 			$('#numbered3').numbered();
+			setTimeout(function(){
+				$('#numbered1').attr('value', '123');
+				console.log('set');
+			}, 1000);
 		});
 	</script>
 </html>
