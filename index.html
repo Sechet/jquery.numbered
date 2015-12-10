@@ -8,80 +8,6 @@
 
 	<script src="jquery-1.11.1.min.js"></script>
 	<script src="jquery.numbered.js"></script>
-	<style>
-		.input{
-			position: relative;
-			padding: 5px;
-		}
-		.label{
-			position: relative;
-			display: block;
-			padding-right: 5px;
-			font-family: "Tahoma";
-			font-size: 14px;
-		}
-		.numbered{
-			position: relative;
-			display: block;
-			padding: 0px;
-			overflow: hidden;
-			font-size: 100%;
-			font-family: "Tahoma";
-			font-size: 14px;
-			border: 0px solid;
-			background: transparent;
-			width: 200px;
-			text-align: center;
-			height: 24px;
-			outline: none;
-			color: transparent;
-			text-indent: -1000px;
-		}
-		.numbered::-ms-clear{
-			display: none;
-		}
-		.numbered__wrap.numbered__wrap_active .numbered{
-			color: red;
-			text-indent: 0px;
-		}
-		.numbered__wrap{
-			position: relative;
-			display: inline-block;
-			font-family: "Tahoma";
-			font-size: 14px;
-			line-height: 20px;
-			height: 24px;
-			border: 1px solid red;
-		}
-		.numbered__mask{
-			position: absolute;
-			display: block;
-			left: 0px;
-			top: 0px;
-			right: 0px;
-			bottom: 0px;
-			content: '';
-			color: red;
-			text-align: center;
-			font-family: "Tahoma";
-			font-size: 14px;
-			line-height: 25px;
-			z-index: 1;
-		}
-		.numbered__wrap_mask .numbered__mask{
-			display: block;
-		}
-		.numbered__wrap_placeholder .numbered__mask{
-			display: block;
-		}
-		.numbered__wrap_active .numbered__mask{
-			display: none;
-		}
-		/*.numbered__wrap_disable .numbered{
-			color: red;
-			text-indent: 0px;
-		}*/
-	</style>
 </head>
 <body class="page">
 	<form id="numberedFrom">
@@ -95,7 +21,7 @@
 		</div>
 		<div class="input">
 			<label class="label" for="numbered3">3. Поле без ничего кроме маски</label>
-			<input id="numbered3" placeholder="placeholder" name="phone3" value="">
+			<input id="numbered3" placeholder="placeholder HTML" name="phone3" value="">
 		</div>
 		<input type="submit" value="send">
 	</form>
@@ -107,17 +33,16 @@
 			$('#numbered1').numbered({
 				mask: '+7 (###) ### - ## - ##',
 				placeholder: 'Мобильный телефон',
-				empty: '_'
+				maskEmpty: '_'
 			});
 			$('#numbered2').numbered({
 				mask: '#### - #### - #### - ####',
-				placeholder: 'Номер карты',
-				empty: false
+				placeholder: 'Номер карты'
 			});
 			$('#numbered3').numbered();
 			setTimeout(function(){
-				$('#numbered1').attr('value', '123');
-				console.log('set');
+				$('#numbered1').val('+71234567890').change();
+				console.log('set', $('#numbered1').numbered('validate'));
 			}, 1000);
 		});
 	</script>
